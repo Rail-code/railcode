@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "packages:clean": "turbo run clean --no-daemon && rm -rf node_modules"
+  },
+  "dependencies": {
+    "turbo": "2.0.4"
+  },
+  "devDependencies": {
+  },
+  "packageManager": "pnpm@9.2.0"
+}

@@ -1,0 +1,7 @@
+packages:
+  - "env/*"
+  - "types/*"
+  - "tools/*"
+  - "web/*"
+  - "apps/*"
+  - "packages/**/*"

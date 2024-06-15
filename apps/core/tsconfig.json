@@ -1,0 +1,3 @@
+{
+  "extends": "@localpkg/env.tsconfig/nestjs.json"
+}

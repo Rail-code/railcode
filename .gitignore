@@ -1,0 +1,21 @@
+### common ###
+.DS_*
+*.log
+logs
+dist
+.env
+.cache
+*.local
+node_modules
+*.sublime*
+**/*.backup.*
+**/*.back.*
+
+### StorybookJs ###
+storybook-static/
+
+### Turbo ###
+.turbo
+
+### Vercel ###
+.vercel
