@@ -1,33 +1,31 @@
 {
-  "name": "@rail-code/cli",
-  "description": "CLI for railcode",
-  "version": "0.0.1",
-  "bin": {
-    "railcode": "./dist/index.mjs"
-  },
-  "main": "./dist/index.mjs",
-  "sideEffects": false,
-  "license": "MIT",
-  "repository": "https://github.com/Rail-code/railcode",
-  "files": [
-    "dist/**"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "release": "npm publish",
-    "dev": "node dist/index.mjs",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
-  },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "figlet": "^1.7.0",
-    "execa": "^9.2.0",
-    "lodash": "^4.17.21"
-  },
-  "devDependencies": {
-    "@types/figlet": "^1.5.8",
-    "@types/shelljs": "^0.8.15",
-    "@localpkg/env.tsconfig": "workspace:*"
-  }
+	"name": "@rail-code/cli",
+	"description": "CLI for railcode",
+	"version": "0.0.1",
+	"bin": {
+		"railcode": "./dist/index.mjs"
+	},
+	"main": "./dist/index.mjs",
+	"sideEffects": false,
+	"license": "MIT",
+	"repository": "https://github.com/Rail-code/railcode",
+	"files": ["dist/**"],
+	"scripts": {
+		"build": "tsup",
+		"release": "npm publish",
+		"dev": "node dist/index.mjs",
+		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+	},
+	"dependencies": {
+		"chalk": "^5.3.0",
+		"commander": "^12.1.0",
+		"figlet": "^1.7.0",
+		"execa": "^9.2.0",
+		"lodash": "^4.17.21"
+	},
+	"devDependencies": {
+		"@types/figlet": "^1.5.8",
+		"@types/shelljs": "^0.8.15",
+		"@localpkg/env.tsconfig": "workspace:*"
+	}
 }

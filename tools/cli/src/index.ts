@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 
-import figlet from 'figlet';
-import chalk from 'chalk';
-import {Command, type OptionValues} from 'commander';
+import figlet from "figlet";
+import chalk from "chalk";
+import { Command, type OptionValues } from "commander";
 
 //Version
-import PackageJson from '../package.json';
+import PackageJson from "../package.json";
 
 //Features
 
@@ -17,20 +17,19 @@ const CLI = new Command();
 /**
  * Print name
  */
-console.log(chalk.cyanBright(figlet.textSync('Railcode CLI', {horizontalLayout: 'full'})));
+console.log(chalk.cyanBright(figlet.textSync("Railcode CLI", { horizontalLayout: "full" })));
 
 /**
  * Create CLI
  */
-CLI.version(PackageJson.version).description('CLI to manage updates');
+CLI.version(PackageJson.version).description("CLI to manage updates");
 
 /**
  * Save options to shared
  */
 let state: { options: OptionValues } = {
-    options: {},
+	options: {},
 };
-
 
 state.options = CLI.opts();
 

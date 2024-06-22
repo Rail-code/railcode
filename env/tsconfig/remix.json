@@ -1,20 +1,20 @@
 {
-  "display": "Remix",
-  "extends": "./base.json",
-  "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@remix-run/node", "vite/client"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ESNext",
-    "strict": false,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true
-  }
+	"display": "Remix",
+	"extends": "./base.json",
+	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable", "ES2022"],
+		"types": ["@remix-run/node", "vite/client"],
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"moduleResolution": "Bundler",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "ESNext",
+		"strict": false,
+		"allowJs": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true
+	}
 }

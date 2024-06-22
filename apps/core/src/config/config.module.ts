@@ -1,16 +1,19 @@
-import {Module} from "@nestjs/common";
+import { Module } from "@nestjs/common";
 
-import {ConfigModule} from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 
 //Config
-import {AppConfig} from "./configuration";
+import { AppConfig, DatabaseConfig } from "./configuration";
+
+//Scheme
+import { EnvSchema } from "@App/config/config.scheme";
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            load: [AppConfig],
-        }),
-    ],
+	imports: [
+		ConfigModule.forRoot({
+			load: [AppConfig, DatabaseConfig],
+			validate: (v) => EnvSchema.parse(v),
+		}),
+	],
 })
-export class AppConfigModule {
-}
+export class AppConfigModule {}

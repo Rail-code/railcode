@@ -1,50 +1,55 @@
 import "reflect-metadata";
 
-import {NestFactory} from "@nestjs/core";
-import {SwaggerModule, DocumentBuilder} from "@nestjs/swagger";
-import {ValidationPipe} from "@nestjs/common";
-import {ConfigService} from "@nestjs/config";
+import { NestFactory } from "@nestjs/core";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { ValidationPipe, VersioningType } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 /**
  * App Module
  */
-import {AppModule} from "./app.module";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule);
 
-    // Starts listening for shutdown hooks
-    app.enableShutdownHooks();
+	// Starts listening for shutdown hooks
+	app.enableShutdownHooks();
 
-    // Set a global prefix for all routes
-    app.setGlobalPrefix("api");
+	// Set a global prefix for all routes
+	app.setGlobalPrefix("api");
 
-    /**
-     * Import configuration
-     */
-    const configService = app.get(ConfigService);
+	//Set version
+	app.enableVersioning({
+		type: VersioningType.URI,
+		defaultVersion: "1",
+	});
 
-    /**
-     * Configure Open API documentation
-     */
-    const configDocs = new DocumentBuilder()
-        .setTitle("Railcode")
-        .setDescription("Dynamic App Updates")
-        .setVersion("0.0.1")
-        .build();
+	/**
+	 * Import configuration
+	 */
+	const configService = app.get(ConfigService);
 
-    //Generate docs
-    const docs = SwaggerModule.createDocument(app, configDocs);
+	/**
+	 * Configure Open API documentation
+	 */
+	const configDocs = new DocumentBuilder()
+		.setTitle("Railcode")
+		.setVersion("0.0.1")
+		.build();
 
-    //Create swagger
-    SwaggerModule.setup("api/docs", app, docs);
+	//Generate docs
+	const docs = SwaggerModule.createDocument(app, configDocs);
 
-    /**
-     * Enable Global validation for endpoints
-     */
-    app.useGlobalPipes(new ValidationPipe());
+	//Create swagger
+	SwaggerModule.setup("docs", app, docs);
 
-    await app.listen(configService.get<number>("app.port"));
+	/**
+	 * Enable Global validation for endpoints
+	 */
+	app.useGlobalPipes(new ValidationPipe());
+
+	await app.listen(configService.get<number>("app.port"));
 }
 
 bootstrap();
