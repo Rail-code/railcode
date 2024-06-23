@@ -1,7 +1,7 @@
 import { Module, Logger } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 //Scheme
@@ -10,8 +10,8 @@ import * as Schema from "./schemes";
 //Provide Name
 export const DatabaseORM = "DatabaseORM";
 
-//Export type safe
-export type DatabaseORMType = NodePgDatabase<typeof Schema>;
+//Export type
+export type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 @Module({
 	imports: [ConfigModule],

@@ -8,10 +8,10 @@ import { ConfigService } from "@nestjs/config";
 /**
  * App Module
  */
-import { AppModule } from "./app.module";
+import { CoreAppModule } from "./app.module";
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(CoreAppModule);
 
 	// Starts listening for shutdown hooks
 	app.enableShutdownHooks();
@@ -33,10 +33,7 @@ async function bootstrap() {
 	/**
 	 * Configure Open API documentation
 	 */
-	const configDocs = new DocumentBuilder()
-		.setTitle("Railcode")
-		.setVersion("0.0.1")
-		.build();
+	const configDocs = new DocumentBuilder().setTitle("Railcode").setVersion("0.0.1").build();
 
 	//Generate docs
 	const docs = SwaggerModule.createDocument(app, configDocs);

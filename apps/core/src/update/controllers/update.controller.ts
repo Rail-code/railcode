@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
 
 //Services
-import { VersionService } from "../services/version.service";
+import { UpdateService } from "../services/update.service";
 
 //Dto
 import { CreateDto } from "../dto/create.dto";
 import { UpdateDto } from "../dto/update.dto";
 
-@Controller("version")
-export class VersionController {
-	constructor(private readonly versionService: VersionService) {}
+@Controller("updates")
+export class UpdateController {
+	constructor(private readonly versionService: UpdateService) {}
 
 	@Post()
 	create(@Body() createVersionDto: CreateDto) {

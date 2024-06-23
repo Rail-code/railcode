@@ -1,102 +1,9 @@
 {
-  "id": "f367b776-9301-4ef1-af81-219ef423bb62",
+  "id": "60998a3e-4818-4f3b-940c-468378e868cb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.role_permissions": {
-      "name": "role_permissions",
-      "schema": "",
-      "columns": {
-        "role_id": {
-          "name": "role_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "permission_id": {
-          "name": "permission_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "role_permissions_role_id_roles_id_fk": {
-          "name": "role_permissions_role_id_roles_id_fk",
-          "tableFrom": "role_permissions",
-          "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "role_permissions_permission_id_permissions_id_fk": {
-          "name": "role_permissions_permission_id_permissions_id_fk",
-          "tableFrom": "role_permissions",
-          "tableTo": "permissions",
-          "columnsFrom": [
-            "permission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "role_permissions_role_id_permission_id_pk": {
-          "name": "role_permissions_role_id_permission_id_pk",
-          "columns": [
-            "role_id",
-            "permission_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "public.roles": {
-      "name": "roles",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "roles_name_unique": {
-          "name": "roles_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      }
-    },
     "public.user_organizations": {
       "name": "user_organizations",
       "schema": "",
@@ -182,17 +89,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "salt": {
-          "name": "salt",
+        "hash": {
+          "name": "hash",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "role_id": {
-          "name": "role_id",
-          "type": "integer",
+        "role": {
+          "name": "role",
+          "type": "role",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -210,21 +118,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "user_role_id_roles_id_fk": {
-          "name": "user_role_id_roles_id_fk",
-          "tableFrom": "user",
-          "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "user_email_unique": {
@@ -258,6 +152,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -269,10 +170,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "permissions_value_unique": {
-          "name": "permissions_value_unique",
+        "unique_role_value": {
+          "name": "unique_role_value",
           "nullsNotDistinct": false,
           "columns": [
+            "role",
             "value"
           ]
         }
@@ -316,8 +218,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "platform_os": {
-          "name": "platform_os",
+        "platform": {
+          "name": "platform",
           "type": "platform_os",
           "typeSchema": "public",
           "primaryKey": false,
@@ -359,52 +261,10 @@
           "nullsNotDistinct": false,
           "columns": [
             "identifier",
-            "platform_os"
+            "platform"
           ]
         }
       }
-    },
-    "public.app_channels": {
-      "name": "app_channels",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "app_id": {
-          "name": "app_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "app_channels_app_id_apps_id_fk": {
-          "name": "app_channels_app_id_apps_id_fk",
-          "tableFrom": "app_channels",
-          "tableTo": "apps",
-          "columnsFrom": [
-            "app_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
     },
     "public.app_updates": {
       "name": "app_updates",
@@ -482,6 +342,48 @@
         }
       }
     },
+    "public.app_channels": {
+      "name": "app_channels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "app_id": {
+          "name": "app_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "app_channels_app_id_apps_id_fk": {
+          "name": "app_channels_app_id_apps_id_fk",
+          "tableFrom": "app_channels",
+          "tableTo": "apps",
+          "columnsFrom": [
+            "app_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.devices": {
       "name": "devices",
       "schema": "",
@@ -498,8 +400,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "platform_os": {
-          "name": "platform_os",
+        "platform": {
+          "name": "platform",
           "type": "platform_os",
           "typeSchema": "public",
           "primaryKey": false,
@@ -603,6 +505,15 @@
       "values": [
         "android",
         "ios"
+      ]
+    },
+    "public.role": {
+      "name": "role",
+      "schema": "public",
+      "values": [
+        "admin",
+        "member",
+        "developer"
       ]
     }
   },

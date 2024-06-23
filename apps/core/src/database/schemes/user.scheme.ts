@@ -1,11 +1,14 @@
 import { relations } from "drizzle-orm";
 import { serial, text, integer, primaryKey, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
 
+//Enum
+import { RolesEnumPg } from "@App/database/shared/enum";
+
 //Schemes
 import { OrganizationScheme } from "@App/database/schemes/organization.scheme";
-import { RoleScheme } from "@App/database/schemes/role.scheme";
 
 /**
+ * Scheme: Users.
  * Users can belong to many organizations.
  * Each member of the organization will have a role.
  */
@@ -14,14 +17,21 @@ export const UserScheme = pgTable("user", {
 	firstName: text("first_name"),
 	lastName: text("last_name"),
 	email: varchar("email", { length: 255 }).notNull().unique(),
-	salt: text("salt"),
-	role: integer("role_id").references(() => RoleScheme.id),
+	hash: text("hash"),
+	role: RolesEnumPg("role").notNull(),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 /**
- * Join schemes
+ * Relations: Users
+ */
+export const UserRelations = relations(UserScheme, ({ one, many }) => ({
+	organizations: many(UserOrganizationScheme),
+}));
+
+/**
+ * Scheme: User organizations
  */
 export const UserOrganizationScheme = pgTable(
 	"user_organizations",
@@ -35,11 +45,3 @@ export const UserOrganizationScheme = pgTable(
 		};
 	},
 );
-
-/**
- * Relations
- */
-export const UserRelations = relations(UserScheme, ({ one, many }) => ({
-	role: one(RoleScheme, { fields: [UserScheme.role], references: [RoleScheme.id] }),
-	organizations: many(UserOrganizationScheme),
-}));

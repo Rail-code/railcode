@@ -3,6 +3,7 @@ import { z } from "zod";
 export const EnvSchema = z.object({
 	PORT: z.number().optional().default(3000),
 	APP_AUTH_SALT: z.number().optional().default(15),
+	APP_AUTH_SECRET: z.string(),
 	DATABASE_POSTGRES_URI: z.string(),
 });
 
@@ -13,6 +14,7 @@ export type EnvSchemeType = {
 		port: EnvType["PORT"];
 		auth: {
 			salt: EnvType["APP_AUTH_SALT"];
+			secret: EnvType["APP_AUTH_SECRET"];
 		};
 	};
 	database: {

@@ -1,6 +1,6 @@
 import { registerAs } from "@nestjs/config";
 
-import { EnvSchemeType } from "@App/config/config.scheme";
+import { EnvSchemeType } from "./config.scheme";
 
 /**
  * Common app config
@@ -8,7 +8,9 @@ import { EnvSchemeType } from "@App/config/config.scheme";
 export const AppConfig = registerAs<EnvSchemeType["app"]>("app", () => ({
 	port: Number.parseInt(process.env.PORT || "4000"),
 	auth: {
-		salt: Number.parseInt(process.env.APP_AUTH_SALT || "15"),
+		salt: Number.parseInt(process.env.APP_AUTH_SALT || "10"),
+		secret: process.env.APP_AUTH_SECRET,
+		expires: "30d",
 	},
 }));
 

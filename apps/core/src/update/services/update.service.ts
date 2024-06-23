@@ -5,7 +5,7 @@ import { CreateDto } from "../dto/create.dto";
 import { UpdateDto } from "../dto/update.dto";
 
 @Injectable()
-export class VersionService {
+export class UpdateService {
 	create(createVersionDto: CreateDto) {
 		return "This action adds a new version";
 	}

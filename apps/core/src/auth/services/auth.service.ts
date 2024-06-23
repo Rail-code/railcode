@@ -1,28 +1,73 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 
-//Dtos
-import { CreateAuthDto } from "../dto/create.dto";
-import { UpdateAuthDto } from "../dto/update.dto";
+import * as _ from "lodash";
+
+import { JwtService } from "@nestjs/jwt";
+
+//Services
+import { UserService } from "@App/user/services/user.service";
+
+//Database
+import { RoleEnum } from "@App/user/constants/roles";
+
+//Helpers
+import { SaltHelper } from "@App/auth/helper/salt";
+
+//Dto
+import { SignupDto } from "@App/auth/dto/auth.dto";
 
 @Injectable()
 export class AuthService {
-	create(createAuthDto: CreateAuthDto) {
-		return "This action adds a new auth";
+	constructor(
+		private jwtService: JwtService,
+		private userService: UserService,
+	) {}
+
+	/**
+	 * Signup user
+	 */
+	async signup(data: SignupDto) {
+		try {
+			const state = {
+				...data,
+				//Default user is admin
+				role: RoleEnum.admin,
+			};
+
+			const result = await this.userService.create(state);
+
+			return _.first(result);
+		} catch (error) {
+			throw new BadRequestException(error.message);
+		}
 	}
 
-	findAll() {
-		return "This action returns all auth";
+	/**
+	 * Generate token and get basic user information
+	 */
+	async login(payload: { user: number }) {
+		return {
+			token: this.jwtService.sign({ sub: payload.user }),
+		};
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} auth`;
-	}
+	/**
+	 * Validate credentials
+	 */
+	async validate(params: { email: string; password: string }) {
+		const user = await this.userService.findOneByEmail(params.email);
 
-	update(id: number, updateAuthDto: UpdateAuthDto) {
-		return `This action updates a #${id} auth`;
-	}
+		if (!user) {
+			throw new BadRequestException("Invalid credentials");
+		}
 
-	remove(id: number) {
-		return `This action removes a #${id} auth`;
+		//Validate salt
+		const passwordMatch = await SaltHelper.validate(params.password, user.hash);
+
+		if (!passwordMatch) {
+			throw new BadRequestException("Invalid credentials");
+		}
+
+		return user;
 	}
 }

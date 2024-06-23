@@ -10,8 +10,9 @@ import { UserController } from "./controllers/user.controller";
 import { DatabaseModule } from "@App/database/database.module";
 
 @Module({
+	imports: [DatabaseModule],
 	controllers: [UserController],
 	providers: [UserService],
-	imports: [DatabaseModule],
+	exports: [UserService],
 })
 export class UserModule {}

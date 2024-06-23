@@ -1,20 +1,24 @@
 import { serial, integer, varchar, timestamp, pgTable, primaryKey } from "drizzle-orm/pg-core";
 
+//Enums
+import { PlatformOsEnum } from "@App/database/shared/enum";
+
 //Schemes
-import { platformOsEnum } from "@App/database/schemes/app.scheme";
-import { AppChannelScheme } from "@App/database/schemes/channel.scheme";
-import { AppUpdateScheme } from "@App/database/schemes/update.scheme";
+import { AppUpdateScheme, ChannelScheme } from "@App/database/schemes/app.scheme";
 
 /**
- * Scheme
+ * Scheme: Device
  */
 export const DeviceScheme = pgTable("devices", {
 	id: serial("id").primaryKey(),
 	name: varchar("name", { length: 100 }).notNull(),
-	platform_os: platformOsEnum("platform_os").notNull(),
-	channel_id: integer("channel_id").references(() => AppChannelScheme.id),
+	platform: PlatformOsEnum("platform").notNull(),
+	channel_id: integer("channel_id").references(() => ChannelScheme.id),
 });
 
+/**
+ * Scheme: Device updates
+ */
 export const DeviceUpdateScheme = pgTable(
 	"device_updates",
 	{
