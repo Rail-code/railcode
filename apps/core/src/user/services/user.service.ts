@@ -1,5 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import * as _ from "lodash";
+
 import { eq } from "drizzle-orm";
 
 //Database
@@ -28,10 +30,21 @@ export class UserService {
 		//Create salt
 		state.hash = await SaltHelper.create(data.password);
 
-		return this.database
+		/**
+		 * Check if user exits
+		 */
+		if (await this.findOneByEmail(data.email)) {
+			throw {
+				message: "An account already exist",
+			};
+		}
+
+		const entity = await this.database
 			.insert(UserScheme)
 			.values({ ...data, ...state })
 			.returning();
+
+		return _.first(entity);
 	}
 
 	async findAll() {

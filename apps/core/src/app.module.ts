@@ -1,4 +1,8 @@
 import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
+
+//Guard
+import { AuthGuard } from "@App/auth/guard/auth.guard";
 
 //Modules
 import { DatabaseModule } from "./database/database.module";
@@ -26,6 +30,11 @@ import { UpdateModule } from "@App/update/update.module";
 		UpdateModule,
 	],
 	controllers: [],
-	providers: [],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: AuthGuard,
+		},
+	],
 })
 export class CoreAppModule {}

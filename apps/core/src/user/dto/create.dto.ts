@@ -1,7 +1,7 @@
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Length, IsEnum, MinLength } from "class-validator";
 
 //Role
-import { RoleEnum, type RoleEnumType } from "@App/user/constants/roles";
+import { Roles, type RolesType } from "@App/shared/constants/permissions";
 
 export class CreateUserDto {
 	@IsString()
@@ -22,6 +22,6 @@ export class CreateUserDto {
 	password: string;
 
 	@IsInt()
-	@IsEnum(RoleEnum)
-	role: RoleEnumType;
+	@IsEnum(Roles)
+	role: RolesType;
 }

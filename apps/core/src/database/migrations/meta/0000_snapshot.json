@@ -1,5 +1,5 @@
 {
-  "id": "60998a3e-4818-4f3b-940c-468378e868cb",
+  "id": "d3a8e3b0-9b0b-4097-bb45-31b78f5f305f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -126,56 +126,6 @@
           "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
-        }
-      }
-    },
-    "public.permissions": {
-      "name": "permissions",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "value": {
-          "name": "value",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "role",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "unique_role_value": {
-          "name": "unique_role_value",
-          "nullsNotDistinct": false,
-          "columns": [
-            "role",
-            "value"
           ]
         }
       }

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 
-import * as _ from "lodash";
+import { instanceToPlain } from "class-transformer";
 
 import { JwtService } from "@nestjs/jwt";
 
@@ -8,13 +8,17 @@ import { JwtService } from "@nestjs/jwt";
 import { UserService } from "@App/user/services/user.service";
 
 //Database
-import { RoleEnum } from "@App/user/constants/roles";
+import type { UserModel } from "@App/database/schemes";
+
+//Constants
+import { Roles } from "@App/shared/constants/permissions";
 
 //Helpers
 import { SaltHelper } from "@App/auth/helper/salt";
 
 //Dto
-import { SignupDto } from "@App/auth/dto/auth.dto";
+import { SignUpDto } from "@App/auth/dto/auth.dto";
+import { UserResponseDto } from "@App/user/dto/response.dto";
 
 @Injectable()
 export class AuthService {
@@ -26,43 +30,42 @@ export class AuthService {
 	/**
 	 * Signup user
 	 */
-	async signup(data: SignupDto) {
+	async signup(data: SignUpDto) {
 		try {
 			const state = {
 				...data,
 				//Default user is admin
-				role: RoleEnum.admin,
+				role: Roles.admin,
 			};
 
-			const result = await this.userService.create(state);
-
-			return _.first(result);
+			return this.userService.create(state);
 		} catch (error) {
 			throw new BadRequestException(error.message);
 		}
 	}
 
 	/**
-	 * Generate token and get basic user information
+	 * Generate token and normalize user
 	 */
-	async login(payload: { user: number }) {
+	async login(user: UserModel) {
 		return {
-			token: this.jwtService.sign({ sub: payload.user }),
+			user: instanceToPlain(new UserResponseDto(user)),
+			token: this.jwtService.sign({ sub: user.id, role: user.role }),
 		};
 	}
 
 	/**
-	 * Validate credentials
+	 * Validate user
 	 */
-	async validate(params: { email: string; password: string }) {
-		const user = await this.userService.findOneByEmail(params.email);
+	async validate(data: { email: string; password: string }) {
+		const user = await this.userService.findOneByEmail(data.email);
 
 		if (!user) {
 			throw new BadRequestException("Invalid credentials");
 		}
 
 		//Validate salt
-		const passwordMatch = await SaltHelper.validate(params.password, user.hash);
+		const passwordMatch = await SaltHelper.validate(data.password, user.hash);
 
 		if (!passwordMatch) {
 			throw new BadRequestException("Invalid credentials");

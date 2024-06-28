@@ -15,5 +15,6 @@ import { EnvSchema } from "@App/config/config.scheme";
 			validate: (v) => EnvSchema.parse(v),
 		}),
 	],
+	exports: [ConfigModule]
 })
 export class AppConfigModule {}

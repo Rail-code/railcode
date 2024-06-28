@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, InferSelectModel } from "drizzle-orm";
 import { serial, text, integer, primaryKey, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
 
 //Enum
@@ -23,12 +23,8 @@ export const UserScheme = pgTable("user", {
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-/**
- * Relations: Users
- */
-export const UserRelations = relations(UserScheme, ({ one, many }) => ({
-	organizations: many(UserOrganizationScheme),
-}));
+// Type for UserScheme
+export type UserModel = InferSelectModel<typeof UserScheme>;
 
 /**
  * Scheme: User organizations
@@ -45,3 +41,10 @@ export const UserOrganizationScheme = pgTable(
 		};
 	},
 );
+
+/**
+ * Relations: Users
+ */
+export const UserRelations = relations(UserScheme, ({ one, many }) => ({
+	organizations: many(UserOrganizationScheme),
+}));

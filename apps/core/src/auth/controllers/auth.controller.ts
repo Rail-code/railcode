@@ -2,15 +2,15 @@ import { Controller, Post, Get, Body, Req, UseGuards, BadRequestException } from
 
 import { ApiTags } from "@nestjs/swagger";
 
-//Passport
-import { LocalAuthGuard } from "@App/auth/guards/local.guard";
-import { AppAuthGuard } from "@App/auth/guards/auth.guard";
-
 //Service
 import { AuthService } from "../services/auth.service";
 
+//Decorator
+import { AuthPublic } from "@App/auth/decorator/public.decorator";
+import { AuthPermission } from "@App/auth/decorator/permission.decorator";
+
 //Dtos
-import { SignupDto } from "../dto/auth.dto";
+import { SignInDto, SignUpDto } from "../dto/auth.dto";
 
 @Controller({
 	version: "1",
@@ -23,34 +23,42 @@ export class AuthController {
 	/**
 	 * Sign in user
 	 */
-	@UseGuards(LocalAuthGuard)
 	@Post("/login")
-	login(@Req() req) {
-		return this.authService.login(req.user);
+	@AuthPublic()
+	async login(@Req() req, @Body() data: SignInDto) {
+		try {
+			const result = await this.authService.validate(data);
+
+			return this.authService.login(result);
+		} catch (error) {
+			throw new BadRequestException(error.message);
+		}
 	}
 
 	/**
 	 * Signup in user
 	 */
 	@Post("/signup")
-	async signup(@Req() req, @Body() data: SignupDto) {
+	async signup(@Req() req, @Body() data: SignUpDto) {
 		try {
 			const result = await this.authService.signup(data);
 
-			return this.authService.login({
-				user: result.id,
-			});
+			return this.authService.login(result);
 		} catch (error) {
-			throw new BadRequestException(error);
+			throw new BadRequestException(error.message);
 		}
 	}
 
 	/**
 	 * Me profile
 	 */
-	@UseGuards(AppAuthGuard)
 	@Get("/profile")
+	@AuthPermission({
+		roles: (roles) => [roles.member, roles.admin, roles.developer],
+		module: (module) => module.account,
+		action: (action) => action.read,
+	})
 	profile(@Req() req) {
-		return req.user;
+		return req.session;
 	}
 }

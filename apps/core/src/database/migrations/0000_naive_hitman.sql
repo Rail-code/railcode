@@ -28,15 +28,6 @@ CREATE TABLE IF NOT EXISTS "user" (
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "permissions" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(50) NOT NULL,
-	"value" varchar(50) NOT NULL,
-	"role" "role" NOT NULL,
-	"description" text,
-	CONSTRAINT "unique_role_value" UNIQUE("role","value")
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "organizations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(100) NOT NULL
