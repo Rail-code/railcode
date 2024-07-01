@@ -8,14 +8,10 @@ import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
 
 //Types
-import { JwtUserType } from "@App/auth/types/session";
+import type { JwtUserType } from "@App/auth/types/session.type";
 
 //Decorator
 import { AUTH_PUBLIC } from "@App/auth/decorator/public.decorator";
-import { AUTH_PERMISSIONS, type AuthPermissionType } from "@App/auth/decorator/permission.decorator";
-
-//Constants
-import { Permissions } from "@App/shared/constants/permissions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -34,11 +30,6 @@ export class AuthGuard implements CanActivate {
 			context.getClass(),
 		]);
 
-		/**
-		 * Permissions
-		 */
-		const Permissions = this.reflector.get<AuthPermissionType>(AUTH_PERMISSIONS, context.getHandler());
-
 		//If is public endpoint, return true
 		if (PublicAuth) {
 			return true;
@@ -46,9 +37,9 @@ export class AuthGuard implements CanActivate {
 
 		const request = context.switchToHttp().getRequest();
 
-		const state: { token: string | null; user: JwtUserType | null } = {
+		const state: { token: string | null; jwt: JwtUserType | null } = {
 			token: null,
-			user: null,
+			jwt: null,
 		};
 
 		/**
@@ -64,7 +55,7 @@ export class AuthGuard implements CanActivate {
 		 * Verify token
 		 */
 		try {
-			state.user = await this.jwtService.verifyAsync<JwtUserType>(state.token, {
+			state.jwt = await this.jwtService.verifyAsync<JwtUserType>(state.token, {
 				secret: this.configService.get<string>("app.auth.secret"),
 			});
 		} catch {
@@ -72,44 +63,13 @@ export class AuthGuard implements CanActivate {
 		}
 
 		/**
-		 * Check permission
-		 */
-		if (Permissions) {
-			this.checkPermission(Permissions, state.user);
-		}
-
-		/**
 		 * Assign user to request
 		 */
-		request.session = state.user;
+		request.session = {
+			user: state.jwt.sub,
+		};
 
 		return true;
-	}
-
-	/**
-	 * @description Check permission
-	 */
-	private checkPermission(params: AuthPermissionType, user: JwtUserType) {
-		//Get permission
-		const permission = Permissions[user.role];
-
-		//Check if a role exits in permissions.
-		if (!permission) {
-			throw new UnauthorizedException("Role not allowed");
-		}
-
-		//Check if action is allowed
-		if (!Object.keys(permission).includes(params.action)) {
-			throw new UnauthorizedException("Action not allowed");
-		}
-
-		//Get modules
-		const modules = permission[params.action] as AuthPermissionType["module"][];
-
-		//Check if module is allowed
-		if (!modules.includes(params.module)) {
-			throw new UnauthorizedException("Module not allowed");
-		}
 	}
 
 	/**

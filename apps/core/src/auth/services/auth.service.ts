@@ -31,17 +31,7 @@ export class AuthService {
 	 * Signup user
 	 */
 	async signup(data: SignUpDto) {
-		try {
-			const state = {
-				...data,
-				//Default user is admin
-				role: Roles.admin,
-			};
-
-			return this.userService.create(state);
-		} catch (error) {
-			throw new BadRequestException(error.message);
-		}
+		return this.userService.create(data);
 	}
 
 	/**
@@ -50,7 +40,7 @@ export class AuthService {
 	async login(user: UserModel) {
 		return {
 			user: instanceToPlain(new UserResponseDto(user)),
-			token: this.jwtService.sign({ sub: user.id, role: user.role }),
+			token: this.jwtService.sign({ sub: user.id }),
 		};
 	}
 

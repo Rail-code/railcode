@@ -14,6 +14,7 @@ export const DeviceScheme = pgTable("devices", {
 	name: varchar("name", { length: 100 }).notNull(),
 	platform: PlatformOsEnum("platform").notNull(),
 	channel_id: integer("channel_id").references(() => ChannelScheme.id),
+	created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
 /**
@@ -25,6 +26,7 @@ export const DeviceUpdateScheme = pgTable(
 		device_id: integer("device_id").references(() => DeviceScheme.id),
 		update_id: integer("update_id").references(() => AppUpdateScheme.id),
 		received_at: timestamp("received_at").defaultNow(),
+		created_at: timestamp("created_at").notNull().defaultNow(),
 	},
 	(table) => ({
 		pk: primaryKey({ columns: [table.device_id, table.update_id] }),

@@ -3,6 +3,7 @@ import { APP_GUARD } from "@nestjs/core";
 
 //Guard
 import { AuthGuard } from "@App/auth/guard/auth.guard";
+import { OrgPermissionGuard } from "@App/organization/guard/permission.guard";
 
 //Modules
 import { DatabaseModule } from "./database/database.module";
@@ -34,6 +35,10 @@ import { UpdateModule } from "@App/update/update.module";
 		{
 			provide: APP_GUARD,
 			useClass: AuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: OrgPermissionGuard,
 		},
 	],
 })

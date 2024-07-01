@@ -1,4 +1,4 @@
-import { serial, integer, varchar, unique, pgTable, pgEnum } from "drizzle-orm/pg-core";
+import { serial, integer, varchar, unique, pgTable, timestamp } from "drizzle-orm/pg-core";
 
 //Enum
 import { PlatformOsEnum } from "@App/database/shared/enum";
@@ -17,6 +17,9 @@ export const AppScheme = pgTable(
 		platform: PlatformOsEnum("platform").notNull(),
 		identifier: varchar("identifier", { length: 100 }).notNull(),
 		organization_id: integer("organization_id").references(() => OrganizationScheme.id),
+		createdAt: timestamp("created_at").notNull().defaultNow(),
+		//Encrypted "app-identifier" sends it by sdk client
+		verification: varchar("verification", { length: 100 }).notNull(),
 	},
 	(table) => ({
 		//Apps can only be unique by app and version
@@ -31,6 +34,7 @@ export const ChannelScheme = pgTable("app_channels", {
 	id: serial("id").primaryKey(),
 	name: varchar("name", { length: 100 }).notNull(),
 	app_id: integer("app_id").references(() => AppScheme.id),
+	created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
 /**
@@ -44,6 +48,7 @@ export const AppUpdateScheme = pgTable(
 		size: integer("size").notNull(), //Mb size
 		app_id: integer("app_id").references(() => AppScheme.id),
 		channel_id: integer("channel_id").references(() => ChannelScheme.id),
+		created_at: timestamp("created_at").notNull().defaultNow(),
 	},
 	(table) => ({
 		//Updates can only be unique by app and version

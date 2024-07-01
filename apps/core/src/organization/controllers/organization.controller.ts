@@ -1,24 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Req, Get, Post, Body, Patch, Param, Delete, BadRequestException } from "@nestjs/common";
 
 //Services
 import { OrganizationService } from "../services/organization.service";
 
-//Dto
-import { CreateDto } from "../dto/create.dto";
-import { UpdateDto } from "../dto/update.dto";
+//Decorator
+import { AuthPermission } from "@App/auth/decorator/permission.decorator";
 
-@Controller("organization")
+//Dto
+import { BodyCreateOrgDto } from "../dto/create.dto";
+import { BodyUpdateOrgDto } from "../dto/update.dto";
+
+//Types
+import { ReqSession } from "@App/shared/express/request.type";
+
+@Controller({
+	version: "1",
+	path: "organization",
+})
 export class OrganizationController {
 	constructor(private readonly organizationService: OrganizationService) {}
 
+	/**
+	 * @description Create an organization
+	 */
 	@Post()
-	create(@Body() createOrganizationDto: CreateDto) {
-		return this.organizationService.create(createOrganizationDto);
+	create(@Req() req: ReqSession, @Body() data: BodyCreateOrgDto) {
+		return this.organizationService.create({
+			...data,
+			user_id: req.session.user,
+		});
 	}
 
-	@Get()
-	findAll() {
-		return this.organizationService.findAll();
+	/**
+	 * @description Get	all organizations of a user
+	 */
+	@Get("/user")
+	findAllByUser(@Req() req: ReqSession) {
+		return this.organizationService.findAllByUser(req.session.user);
 	}
 
 	@Get(":id")
@@ -26,9 +44,17 @@ export class OrganizationController {
 		return this.organizationService.findOne(+id);
 	}
 
-	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateOrganizationDto: UpdateDto) {
-		return this.organizationService.update(+id, updateOrganizationDto);
+	@Patch(":organization")
+	@AuthPermission({
+		roles: (roles) => [roles.admin],
+		module: (module) => module.organization,
+		action: (action) => action.update,
+	})
+	async update(@Req() req: ReqSession, @Param("organization") organization: string, @Body() data: BodyUpdateOrgDto) {
+		return this.organizationService.update(+organization, {
+			...data,
+			user_id: req.session.user,
+		});
 	}
 
 	@Delete(":id")

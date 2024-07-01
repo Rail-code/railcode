@@ -1,25 +1,111 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, BadRequestException } from "@nestjs/common";
+
+import * as _ from "lodash";
+
+import { eq, and } from "drizzle-orm";
+
+//Modules
+import { DatabaseORM, type NodePgDatabase } from "@App/database/database.module";
+
+//Constants
+import { Roles } from "@App/shared/constants/permissions";
+
+//Scheme
+import { OrganizationScheme, OrganizationUserScheme, UserScheme } from "@App/database/schemes";
 
 //Dto
-import { CreateDto } from "../dto/create.dto";
-import { UpdateDto } from "../dto/update.dto";
+import { CreateOrgDto } from "../dto/create.dto";
+import { UpdateOrgDto } from "../dto/update.dto";
 
 @Injectable()
 export class OrganizationService {
-	create(createOrganizationDto: CreateDto) {
-		return "This action adds a new organization";
+	constructor(
+		@Inject(DatabaseORM)
+		readonly database: NodePgDatabase<{
+			OrganizationScheme: typeof OrganizationScheme;
+			OrganizationUserScheme: typeof OrganizationUserScheme;
+		}>,
+	) {}
+
+	/**
+	 * @description Create organization
+	 */
+	async create(data: CreateOrgDto) {
+		return this.database.transaction(async (tx) => {
+			/**
+			 * Create organization
+			 */
+			const [organization] = await tx
+				.insert(OrganizationScheme)
+				.values({
+					name: data.name,
+				})
+				.returning();
+
+			/**
+			 * Assign user to organization
+			 */
+			await tx
+				.insert(OrganizationUserScheme)
+				.values({
+					role: Roles.admin,
+					user_id: data.user_id,
+					organization_id: organization.id,
+				})
+				.returning();
+
+			return organization;
+		});
 	}
 
-	findAll() {
-		return "This action returns all organization";
+	/**
+	 * @description Get all organizations of a user
+	 */
+	async findAllByUser(user_id: number) {
+		const result = await this.database
+			.select()
+			.from(OrganizationScheme)
+			.innerJoin(OrganizationUserScheme, eq(OrganizationUserScheme.organization_id, OrganizationScheme.id))
+			.where(eq(OrganizationUserScheme.user_id, user_id));
+
+		//Format response
+		return _.map(result, (entity) => ({ ...entity.organizations }));
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} organization`;
+	/**
+	 * @description Find by organization id
+	 */
+	async findOne(id: number) {
+		return this.database.query.OrganizationScheme.findFirst({
+			where: eq(OrganizationScheme.id, id),
+		});
 	}
 
-	update(id: number, updateOrganizationDto: UpdateDto) {
-		return `This action updates a #${id} organization`;
+	/**
+	 * @description Update organization
+	 */
+	async update(organization: number, data: UpdateOrgDto) {
+		/**
+		 * Check if belongs to the user
+		 */
+		const validate = await this.database.query.OrganizationUserScheme.findFirst({
+			where: and(
+				eq(OrganizationUserScheme.organization_id, organization),
+				eq(OrganizationUserScheme.user_id, data.user_id),
+			),
+		});
+
+		if (!validate) {
+			throw new BadRequestException("User does not belong to organization");
+		}
+
+		const [result] = await this.database
+			.update(OrganizationScheme)
+			.set(data)
+			.where(eq(OrganizationScheme.id, organization))
+			.returning();
+
+		return result;
 	}
 
 	remove(id: number) {
