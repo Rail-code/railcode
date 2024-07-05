@@ -13,5 +13,6 @@ import { DatabaseModule } from "@App/database/database.module";
 	imports: [DatabaseModule],
 	controllers: [OrganizationController],
 	providers: [OrganizationService],
+	exports: [OrganizationService],
 })
 export class OrganizationModule {}

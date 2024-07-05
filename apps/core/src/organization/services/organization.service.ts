@@ -82,22 +82,31 @@ export class OrganizationService {
 	}
 
 	/**
+	 * @description Check if user belongs to organization
+	 */
+	async userBelongsTo(user: number | string, organization: number | string) {
+		const result = await this.database.query.OrganizationUserScheme.findFirst({
+			where: and(
+				eq(OrganizationUserScheme.organization_id, Number(organization)),
+				eq(OrganizationUserScheme.user_id, Number(user)),
+			),
+		});
+
+		if (!result) {
+			throw new BadRequestException("User does not belong to organization");
+		}
+
+		return result;
+	}
+
+	/**
 	 * @description Update organization
 	 */
 	async update(organization: number, data: UpdateOrgDto) {
 		/**
 		 * Check if belongs to the user
 		 */
-		const validate = await this.database.query.OrganizationUserScheme.findFirst({
-			where: and(
-				eq(OrganizationUserScheme.organization_id, organization),
-				eq(OrganizationUserScheme.user_id, data.user_id),
-			),
-		});
-
-		if (!validate) {
-			throw new BadRequestException("User does not belong to organization");
-		}
+		await this.userBelongsTo(data.user_id, organization);
 
 		const [result] = await this.database
 			.update(OrganizationScheme)

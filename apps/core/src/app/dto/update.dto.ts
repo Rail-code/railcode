@@ -1,6 +1,8 @@
-import { PartialType } from "@nestjs/swagger";
+import { PartialType, PickType } from "@nestjs/swagger";
 
-//Dto
-import { CreateDto } from "./create.dto";
+//Dtos
+import { CreateAppDto, BodyCreateAppDto } from "@App/app/dto/create.dto";
 
-export class UpdateDto extends PartialType(CreateDto) {}
+export class UpdateAppDto extends PartialType(CreateAppDto) {}
+
+export class BodyUpdateAppDto extends PartialType(PickType(BodyCreateAppDto, ["name"])) {}

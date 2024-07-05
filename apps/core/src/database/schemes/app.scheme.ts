@@ -19,7 +19,7 @@ export const AppScheme = pgTable(
 		organization_id: integer("organization_id").references(() => OrganizationScheme.id),
 		createdAt: timestamp("created_at").notNull().defaultNow(),
 		//Encrypted "app-identifier" sends it by sdk client
-		verification: varchar("verification", { length: 100 }).notNull(),
+		verification: varchar("verification", { length: 100 }),
 	},
 	(table) => ({
 		//Apps can only be unique by app and version

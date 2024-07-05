@@ -15,6 +15,13 @@
       "when": 1719687358965,
       "tag": "0001_stormy_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720163761360,
+      "tag": "0002_romantic_zzzax",
+      "breakpoints": true
     }
   ]
 }

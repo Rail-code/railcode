@@ -1,13 +1,15 @@
 import { IsInt, IsNotEmpty, IsString } from "class-validator";
 
-export class BodyCreateOrgDto {
+import { OmitType } from "@nestjs/swagger";
+
+export class CreateOrgDto {
 	@IsString()
 	@IsNotEmpty()
 	name: string;
-}
 
-export class CreateOrgDto extends BodyCreateOrgDto {
 	@IsInt()
 	@IsNotEmpty()
 	user_id: number;
 }
+
+export class BodyCreateOrgDto extends OmitType(CreateOrgDto, ["user_id"]) {}
