@@ -4,7 +4,6 @@ import { Controller, UseGuards, Req, Get, Post, Body, Patch, Param, Delete } fro
 import { ChannelService } from "../services/channel.service";
 
 //Guards
-import { AppOrgGuard } from "@App/app/guard/app-org.guard";
 import { OrgUserGuard } from "@App/organization/guard/org-user.guard";
 
 //Dto
@@ -23,6 +22,9 @@ import { ReqSession } from "@App/shared/express/request.type";
 export class ChannelController {
 	constructor(private readonly channelService: ChannelService) {}
 
+	/**
+	 * @description Create a channel for app
+	 */
 	@Post()
 	create(
 		@Req() req: ReqSession,
@@ -37,14 +39,27 @@ export class ChannelController {
 		});
 	}
 
+	/**
+	 * @description All channels of an app
+	 */
 	@Get()
-	findAll(@Req() req: ReqSession, @Param("app") app: string) {
-		return this.channelService.findAllInApp(+app);
+	findAll(@Req() req: ReqSession, @Param("org") org: string, @Param("app") app: string) {
+		return this.channelService.findAllInApp({
+			orgId: +org,
+			appId: +app,
+		});
 	}
 
+	/**
+	 * @description Get a channel
+	 */
 	@Get(":id")
-	findOne(@Param("id") id: string) {
-		return this.channelService.findOne(+id);
+	findOne(@Param("id") id: string, @Param("org") org: string, @Param("app") app: string) {
+		return this.channelService.findOneInApp({
+			appId: +app,
+			orgId: +org,
+			channelId: +id,
+		});
 	}
 
 	@Patch(":id")

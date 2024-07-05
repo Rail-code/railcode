@@ -28,6 +28,27 @@ export const AppScheme = pgTable(
 );
 
 /**
+ * Scheme: Apps keys
+ */
+export const AppKeyScheme = pgTable(
+	"app_keys",
+	{
+		id: serial("id").primaryKey(),
+		name: varchar("name", { length: 100 }).notNull(),
+		//Key sign with secret organization.
+		key: varchar("key", { length: 100 }).unique(),
+		//Prefix to identify key.
+		prefix: varchar("prefix", { length: 7 }).notNull(),
+		createdAt: timestamp("created_at").notNull().defaultNow(),
+		app_id: integer("app_id").references(() => AppScheme.id),
+	},
+	(table) => ({
+		//Updates can only be unique by app and version
+		uniqueAppKeyPrefix: unique("unique_appkey_prefix").on(table.key, table.prefix),
+	}),
+);
+
+/**
  * Scheme: Channels
  */
 export const ChannelScheme = pgTable("app_channels", {

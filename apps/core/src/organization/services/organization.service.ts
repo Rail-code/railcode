@@ -7,6 +7,9 @@ import { eq, and } from "drizzle-orm";
 //Modules
 import { DatabaseORM, type NodePgDatabase } from "@App/database/database.module";
 
+//Helpers
+import { OrgSecretHelper } from "@App/organization/helper/secret";
+
 //Constants
 import { Roles } from "@App/shared/constants/permissions";
 
@@ -39,6 +42,8 @@ export class OrganizationService {
 				.insert(OrganizationScheme)
 				.values({
 					name: data.name,
+					//Create secret
+					secret: OrgSecretHelper.create(),
 				})
 				.returning();
 

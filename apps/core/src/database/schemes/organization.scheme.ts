@@ -12,6 +12,8 @@ import { RolesEnumPg } from "@App/database/shared/enum";
 export const OrganizationScheme = pgTable("organizations", {
 	id: serial("id").primaryKey(),
 	name: varchar("name", { length: 100 }).notNull(),
+	//Secret key to use to sign app keys and more. (auto generate)
+	secret: varchar("secret", { length: 100 }).notNull(),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
