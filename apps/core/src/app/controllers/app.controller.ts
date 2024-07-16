@@ -1,38 +1,63 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { UseGuards, Controller, Req, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
 
 //Services
 import { AppService } from "../services/app.service";
 
 //Dto
-import { CreateDto } from "../dto/create.dto";
-import { UpdateDto } from "../dto/update.dto";
+import { BodyCreateAppDto } from "../dto/create.dto";
+import { BodyUpdateAppDto } from "../dto/update.dto";
 
-@Controller("app")
+//Guards
+import { OrgUserGuard } from "@App/organization/guard/org-user.guard";
+
+//Types
+import { ReqSession } from "@App/shared/express/request.type";
+
+@Controller({
+	version: "1",
+	path: "organization/:org/app",
+})
+@UseGuards(OrgUserGuard)
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
+	/**
+	 * @description Create an app for x organization
+	 */
 	@Post()
-	create(@Body() createAppDto: CreateDto) {
-		return this.appService.create(createAppDto);
+	create(@Req() req: ReqSession, @Param("org") org: string, @Body() data: BodyCreateAppDto) {
+		return this.appService.create({
+			...data,
+			user_id: req.session.user,
+			organization_id: +org,
+		});
 	}
 
+	/**
+	 * @description All apps that belong to an organization
+	 */
 	@Get()
-	findAll() {
-		return this.appService.findAll();
+	findAll(@Req() req: ReqSession, @Param("org") org: string) {
+		return this.appService.findAllInOrg(+org);
 	}
 
+	/**
+	 * @description Get an organization app
+	 */
 	@Get(":id")
-	findOne(@Param("id") id: string) {
-		return this.appService.findOne(+id);
+	findOne(@Req() req: ReqSession, @Param("id") id: string, @Param("org") org: string) {
+		return this.appService.findOneInOrg(+id, +org);
 	}
 
+	/**
+	 * @description Update an app
+	 */
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateAppDto: UpdateDto) {
-		return this.appService.update(+id, updateAppDto);
-	}
-
-	@Delete(":id")
-	remove(@Param("id") id: string) {
-		return this.appService.remove(+id);
+	update(@Req() req: ReqSession, @Param("id") id: string, @Param("org") org: string, @Body() data: BodyUpdateAppDto) {
+		return this.appService.update(+id, {
+			...data,
+			user_id: req.session.user,
+			organization_id: +org,
+		});
 	}
 }

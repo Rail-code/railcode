@@ -1,6 +1,14 @@
 import { PartialType } from "@nestjs/swagger";
 
 //Dto
-import { CreateDto } from "./create.dto";
+import { BodyCreateOrgDto, CreateOrgDto } from "./create.dto";
 
-export class UpdateDto extends PartialType(CreateDto) {}
+/**
+ * Update body
+ */
+export class BodyUpdateOrgDto extends PartialType(BodyCreateOrgDto) {}
+
+/**
+ * Update model
+ */
+export class UpdateOrgDto extends PartialType(CreateOrgDto) {}

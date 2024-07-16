@@ -1,28 +1,102 @@
-import { Injectable } from "@nestjs/common";
+import {Injectable, Inject, BadRequestException} from "@nestjs/common";
+
+import {eq, and} from "drizzle-orm";
+
+import * as _ from "lodash";
+
+//Modules
+import {DatabaseORM, type NodePgDatabase} from "@App/database/database.module";
+
+//Scheme
+import {ChannelScheme, AppScheme, OrganizationScheme} from "@App/database/schemes";
+
+//Services
+import {AppService} from "@App/app/services/app.service";
 
 //Dto
-import { CreateDto } from "../dto/create.dto";
-import { UpdateDto } from "../dto/update.dto";
+import {CreateAppChannelDto} from "../dto/create.dto";
+import {UpdateAppChannelDto} from "../dto/update.dto";
 
 @Injectable()
 export class ChannelService {
-	create(createChannelDto: CreateDto) {
-		return "This action adds a new channel";
-	}
+    constructor(
+        @Inject(DatabaseORM)
+        readonly database: NodePgDatabase<{
+            ChannelScheme: typeof ChannelScheme;
+        }>,
+        private appService: AppService,
+    ) {
+    }
 
-	findAll() {
-		return "This action returns all channel";
-	}
+    /**
+     * @description Create a channel for app
+     */
+    async create(data: CreateAppChannelDto) {
+        try {
+            /**
+             * Create channel
+             */
+            const [result] = await this.database.insert(ChannelScheme).values(data).returning();
 
-	findOne(id: number) {
-		return `This action returns a #${id} channel`;
-	}
+            return result;
+        } catch (error) {
+            throw new BadRequestException({
+                message: "App channel could not be created",
+                error: error.message,
+            });
+        }
+    }
 
-	update(id: number, updateChannelDto: UpdateDto) {
-		return `This action updates a #${id} channel`;
-	}
+    /**
+     * @description All channels of an app
+     */
+    async findAllInApp(query: {
+        appId: number;
+        orgId: number;
+    }) {
+        const result = await this.database
+            .select()
+            .from(ChannelScheme)
+            .innerJoin(AppScheme, eq(AppScheme.id, query.appId))
+            .innerJoin(OrganizationScheme, eq(OrganizationScheme.id, query.orgId))
+            .where(eq(ChannelScheme.app_id, query.appId));
 
-	remove(id: number) {
-		return `This action removes a #${id} channel`;
-	}
+        return _.map(result, (entity) => ({...entity.app_channels}));
+    }
+
+    /**
+     * @description Get a channel in app
+     */
+    async findOneInApp(query: {
+        appId: number;
+        orgId: number;
+        channelId: number;
+    }) {
+        const [result] = await this.database
+            .select()
+            .from(ChannelScheme)
+            //Channel belong to app
+            .innerJoin(AppScheme, eq(AppScheme.id, query.appId))
+            //App belong to org
+            .innerJoin(OrganizationScheme, eq(OrganizationScheme.id, query.orgId))
+            .where(and(eq(ChannelScheme.app_id, query.appId), eq(ChannelScheme.id, query.channelId)));
+
+        if (!result) {
+            throw new BadRequestException("App channel could not be found");
+        }
+
+        return result.app_channels;
+    }
+
+    findOne(id: number) {
+        return `This action returns a #${id} channel`;
+    }
+
+    update(id: number, updateChannelDto: UpdateAppChannelDto) {
+        return `This action updates a #${id} channel`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} channel`;
+    }
 }

@@ -44,7 +44,12 @@ async function bootstrap() {
 	/**
 	 * Enable Global validation for endpoints
 	 */
-	app.useGlobalPipes(new ValidationPipe());
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true, // Strip properties that do not have decorators
+			forbidNonWhitelisted: true, // Throw an error if non-whitelisted properties are present
+		}),
+	);
 
 	await app.listen(configService.get<number>("app.port"));
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Get, Body, Req, BadRequestException } from "@nestjs/common";
 
 import { ApiTags } from "@nestjs/swagger";
 
@@ -7,7 +7,7 @@ import { AuthService } from "../services/auth.service";
 
 //Decorator
 import { AuthPublic } from "@App/auth/decorator/public.decorator";
-import { AuthPermission } from "@App/auth/decorator/permission.decorator";
+import { OrgPermission } from "@App/organization/decorator/permission.decorator";
 
 //Dtos
 import { SignInDto, SignUpDto } from "../dto/auth.dto";
@@ -39,6 +39,7 @@ export class AuthController {
 	 * Signup in user
 	 */
 	@Post("/signup")
+	@AuthPublic()
 	async signup(@Req() req, @Body() data: SignUpDto) {
 		try {
 			const result = await this.authService.signup(data);
@@ -53,8 +54,8 @@ export class AuthController {
 	 * Me profile
 	 */
 	@Get("/profile")
-	@AuthPermission({
-		roles: (roles) => [roles.member, roles.admin, roles.developer],
+	@OrgPermission({
+		roles: (role) => [role.admin],
 		module: (module) => module.account,
 		action: (action) => action.read,
 	})

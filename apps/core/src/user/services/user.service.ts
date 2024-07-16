@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
 
 import * as _ from "lodash";
 
@@ -34,9 +34,7 @@ export class UserService {
 		 * Check if user exits
 		 */
 		if (await this.findOneByEmail(data.email)) {
-			throw {
-				message: "An account already exist",
-			};
+			throw new BadRequestException("An account already exist");
 		}
 
 		const entity = await this.database
