@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1719670163891,
-      "tag": "0000_needy_valkyrie",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1719687358965,
-      "tag": "0001_stormy_doctor_octopus",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1720163761360,
-      "tag": "0002_romantic_zzzax",
+      "when": 1721122348624,
+      "tag": "0000_happy_kinsey_walden",
       "breakpoints": true
     }
   ]

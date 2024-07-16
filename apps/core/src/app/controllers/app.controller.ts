@@ -53,21 +53,11 @@ export class AppController {
 	 * @description Update an app
 	 */
 	@Patch(":id")
-	update(
-		@Req() req: ReqSession,
-		@Param("id") id: string,
-		@Param("org") org: string,
-		@Body() data: BodyUpdateAppDto,
-	) {
+	update(@Req() req: ReqSession, @Param("id") id: string, @Param("org") org: string, @Body() data: BodyUpdateAppDto) {
 		return this.appService.update(+id, {
 			...data,
 			user_id: req.session.user,
 			organization_id: +org,
 		});
-	}
-
-	@Delete(":id")
-	remove(@Req() req: ReqSession, @Param("id") id: string, @Param("org") org: string) {
-		return this.appService.remove(+id);
 	}
 }

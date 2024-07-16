@@ -129,8 +129,4 @@ export class AppService {
 
 		return result;
 	}
-
-	async remove(id: number) {
-		return `This action removes a #${id} app`;
-	}
 }

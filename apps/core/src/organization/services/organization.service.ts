@@ -35,6 +35,10 @@ export class OrganizationService {
 	 */
 	async create(data: CreateOrgDto) {
 		return this.database.transaction(async (tx) => {
+			const secret = OrgSecretHelper.create();
+
+			console.log("secret", secret)
+
 			/**
 			 * Create organization
 			 */
@@ -43,7 +47,7 @@ export class OrganizationService {
 				.values({
 					name: data.name,
 					//Create secret
-					secret: OrgSecretHelper.create(),
+					secret,
 				})
 				.returning();
 
