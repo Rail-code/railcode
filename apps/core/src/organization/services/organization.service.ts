@@ -2,6 +2,8 @@ import { Injectable, Inject, BadRequestException } from "@nestjs/common";
 
 import * as _ from "lodash";
 
+import { instanceToPlain } from "class-transformer";
+
 import { eq, and } from "drizzle-orm";
 
 //Modules
@@ -18,6 +20,7 @@ import { OrganizationScheme, OrganizationUserScheme, UserScheme } from "@App/dat
 
 //Dto
 import { CreateOrgDto } from "../dto/create.dto";
+import { OrgResponseDto } from "@App/organization/dto/response.dto";
 import { UpdateOrgDto } from "../dto/update.dto";
 
 @Injectable()
@@ -36,8 +39,6 @@ export class OrganizationService {
 	async create(data: CreateOrgDto) {
 		return this.database.transaction(async (tx) => {
 			const secret = OrgSecretHelper.create();
-
-			console.log("secret", secret)
 
 			/**
 			 * Create organization
@@ -68,7 +69,7 @@ export class OrganizationService {
 	}
 
 	/**
-	 * @description Get all organizations of a user
+	 * @description Get all organizations of a user, response is normalized
 	 */
 	async findAllByUser(user_id: number) {
 		const result = await this.database
@@ -78,7 +79,7 @@ export class OrganizationService {
 			.where(eq(OrganizationUserScheme.user_id, user_id));
 
 		//Format response
-		return _.map(result, (entity) => ({ ...entity.organizations }));
+		return _.map(result, (entity) => instanceToPlain(new OrgResponseDto({ ...entity.organizations })));
 	}
 
 	/**
@@ -124,9 +125,5 @@ export class OrganizationService {
 			.returning();
 
 		return result;
-	}
-
-	remove(id: number) {
-		return `This action removes a #${id} organization`;
 	}
 }

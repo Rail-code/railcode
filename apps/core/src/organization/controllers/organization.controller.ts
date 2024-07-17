@@ -1,5 +1,7 @@
 import { Controller, Req, Get, Post, Body, Patch, Param, Delete, BadRequestException } from "@nestjs/common";
 
+import { instanceToPlain } from "class-transformer";
+
 //Services
 import { OrganizationService } from "../services/organization.service";
 
@@ -9,6 +11,7 @@ import { AuthPermission } from "@App/auth/decorator/permission.decorator";
 //Dto
 import { BodyCreateOrgDto } from "../dto/create.dto";
 import { BodyUpdateOrgDto } from "../dto/update.dto";
+import { OrgResponseDto } from "@App/organization/dto/response.dto";
 
 //Types
 import { ReqSession } from "@App/shared/express/request.type";
@@ -24,11 +27,13 @@ export class OrganizationController {
 	 * @description Create an organization
 	 */
 	@Post()
-	create(@Req() req: ReqSession, @Body() data: BodyCreateOrgDto) {
-		return this.organizationService.create({
+	async create(@Req() req: ReqSession, @Body() data: BodyCreateOrgDto) {
+		const result = await this.organizationService.create({
 			...data,
 			user_id: req.session.user,
 		});
+
+		return instanceToPlain(new OrgResponseDto(result));
 	}
 
 	/**
@@ -55,10 +60,5 @@ export class OrganizationController {
 			...data,
 			user_id: req.session.user,
 		});
-	}
-
-	@Delete(":id")
-	remove(@Param("id") id: string) {
-		return this.organizationService.remove(+id);
 	}
 }
