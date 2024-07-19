@@ -1,5 +1,5 @@
 import ts from "typescript";
-import path from "path";
+import path from "node:path";
 
 const DEFAULT_CONFIG = {
 	dist: "./dist",
@@ -46,8 +46,6 @@ export const tscGenerator = (opts = {}) => {
 				outDir: state.config.dist,
 			});
 
-			// console.log(state.typescript.file)
-
 			// Parse JSON string content to compiler options
 			state.typescript.command = ts.parseJsonConfigFileContent(
 				state.typescript.content,
@@ -81,7 +79,7 @@ export const tscGenerator = (opts = {}) => {
 				}
 			});
 
-			// Check if there were any emit errors
+			// Check if there were any emitted errors
 			if (tsProgramEmitResult.emitSkipped) {
 				this.error("TypeScript emit failed");
 			} else {

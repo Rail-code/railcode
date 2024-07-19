@@ -20,8 +20,7 @@
 		"strict": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
-		"strictNullChecks": true,
-		"typeRoots": ["node_modules/@types"]
+		"strictNullChecks": true
 	},
 	"exclude": ["node_modules", "dist"]
 }

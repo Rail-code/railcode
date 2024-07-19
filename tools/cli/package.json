@@ -11,7 +11,7 @@
 	"repository": "https://github.com/Rail-code/railcode",
 	"files": ["dist/**"],
 	"scripts": {
-		"build": "tsup",
+		"build": "rollup -c",
 		"release": "npm publish",
 		"dev": "node dist/index.mjs",
 		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
