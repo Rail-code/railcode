@@ -11,7 +11,7 @@
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"target": "ESNext",
-		"strict": false,
+		"strict": true,
 		"allowJs": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,

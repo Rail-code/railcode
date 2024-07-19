@@ -12,7 +12,14 @@
 		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
 	},
 	"devDependencies": {
-		"@localpkg/env.tsconfig": "workspace:*"
+		"@localpkg/env.tsconfig": "workspace:*",
+		"postcss": "^8.4.39",
+		"postcss-preset-mantine": "^1.16.0",
+		"postcss-simple-vars": "^7.0.1"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@mantine/core": "^7.11.2",
+		"@mantine/hooks": "^7.11.2",
+		"@mantine/notifications": "^7.11.2"
+	}
 }
