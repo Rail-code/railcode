@@ -10,10 +10,12 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
+		"@localpkg/pkg.ui.core": "workspace:*",
 		"http-proxy-middleware": "^3.0.0",
 		"@remix-run/express": "^2.10.3",
 		"@remix-run/node": "^2.10.3",
 		"@remix-run/react": "^2.10.3",
+		"zod": "^3.23.8",
 		"compression": "^1.7.4",
 		"helmet": "^7.1.0",
 		"cross-env": "^7.0.3",
