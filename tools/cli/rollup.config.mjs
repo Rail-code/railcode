@@ -1,3 +1,3 @@
-import rollupConfig from "@localpkg/env.tsconfig/rollup.config.mjs";
+import rollupConfig from "@localpkg/env.tsconfig/rollup.config.node.mjs";
 
 export default rollupConfig;

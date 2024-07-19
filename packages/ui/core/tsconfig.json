@@ -1,5 +1,5 @@
 {
-	"extends": "@localpkg/env.tsconfig/base.json",
+	"extends": "@localpkg/env.tsconfig/react.json",
 	"include": ["./src"],
 	"exclude": ["dist", "node_modules"]
 }

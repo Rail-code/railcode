@@ -1,9 +1,7 @@
 import { defineConfig } from "rollup";
 
-import svgr from "@svgr/rollup";
 import swc from "@rollup/plugin-swc";
 import json from "@rollup/plugin-json";
-import css from "rollup-plugin-import-css";
 import commonjs from "@rollup/plugin-commonjs";
 import cleanDir from "@rollup-extras/plugin-clean";
 import preserveDirectives from "rollup-preserve-directives";
@@ -11,7 +9,7 @@ import typescript from "@rollup/plugin-typescript";
 
 const CONFIG = {
 	root: "src",
-	input: "src/index.tsx",
+	input: "src/index.ts",
 	output: "dist",
 };
 
@@ -31,8 +29,6 @@ export default defineConfig({
 			outputPlugin: true,
 			verbose: true,
 		}),
-		css(),
-		svgr({ plugins: ["@svgr/plugin-jsx"] }), //allow svg files
 		json(), //Allow using json
 		commonjs(), //Allow commonjs
 		swc({
