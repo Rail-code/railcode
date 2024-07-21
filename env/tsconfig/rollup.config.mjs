@@ -1,13 +1,13 @@
 import { defineConfig } from "rollup";
 
 import svgr from "@svgr/rollup";
-import swc from "@rollup/plugin-swc";
+import swc from "rollup-plugin-swc3";
 import json from "@rollup/plugin-json";
-import css from "rollup-plugin-import-css";
+import postcss from "rollup-plugin-postcss";
 import commonjs from "@rollup/plugin-commonjs";
 import cleanDir from "@rollup-extras/plugin-clean";
 import preserveDirectives from "rollup-preserve-directives";
-import typescript from "@rollup/plugin-typescript";
+import { tscGenerator } from "rollup-plugin-tsc-generator";
 
 const CONFIG = {
 	root: "src",
@@ -31,7 +31,12 @@ export default defineConfig({
 			outputPlugin: true,
 			verbose: true,
 		}),
-		css(),
+		postcss({
+			extract: "styles.css",
+			extensions: [".scss", ".css"],
+			modules: true,
+			minimize: true,
+		}),
 		svgr({ plugins: ["@svgr/plugin-jsx"] }), //allow svg files
 		json(), //Allow using json
 		commonjs(), //Allow commonjs
@@ -42,6 +47,8 @@ export default defineConfig({
 				parser: {
 					syntax: "typescript",
 					tsx: true,
+					decorators: true,
+					dynamicImport: true,
 				},
 				target: "esnext",
 				transform: {
@@ -53,11 +60,6 @@ export default defineConfig({
 			},
 		}),
 		preserveDirectives(), //Allow keeping directives on top like use client, etc.
-		typescript({
-			outDir: CONFIG.output,
-			rootDir: CONFIG.root,
-			noEmitOnError: true,
-			noForceEmit: true,
-		}),
+		tscGenerator(),
 	],
 });

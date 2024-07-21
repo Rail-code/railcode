@@ -2,7 +2,7 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"display": "React Library",
 	"extends": "./base.json",
-	"files": ["./types/asset.d.ts", "./types/react.env.d.ts"],
+	"files": ["types/asset.d.ts"],
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"lib": ["dom", "ESNext"],
