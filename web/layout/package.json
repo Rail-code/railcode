@@ -1,0 +1,20 @@
+{
+	"name": "@localpkg/web.layout",
+	"version": "0.0.1",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"files": ["dist/**" ],
+	"scripts": {
+		"build": "rollup -c",
+		"dev": "rollup -c -w",
+		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+	},
+	"devDependencies": {
+		"@localpkg/env.tsconfig": "workspace:*"
+	},
+	"dependencies": {
+		"@localpkg/pkg.ui.core": "workspace:*"
+	}
+}

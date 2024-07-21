@@ -1,11 +1,10 @@
 import { defineConfig } from "rollup";
 
-import swc from "@rollup/plugin-swc";
+import swc from "rollup-plugin-swc3";
 import json from "@rollup/plugin-json";
 import commonjs from "@rollup/plugin-commonjs";
 import cleanDir from "@rollup-extras/plugin-clean";
-import preserveDirectives from "rollup-preserve-directives";
-import typescript from "@rollup/plugin-typescript";
+import { tscGenerator } from "rollup-plugin-tsc-generator";
 
 const CONFIG = {
 	root: "src",
@@ -37,23 +36,13 @@ export default defineConfig({
 				//Use typescript as default
 				parser: {
 					syntax: "typescript",
-					tsx: true,
+					decorators: true,
+					dynamicImport: true,
 				},
 				target: "esnext",
-				transform: {
-					//Support reacts
-					react: {
-						runtime: "automatic",
-					},
-				},
+				transform: {},
 			},
 		}),
-		preserveDirectives(), //Allow keeping directives on top like use client, etc.
-		typescript({
-			outDir: CONFIG.output,
-			rootDir: CONFIG.root,
-			noEmitOnError: true,
-			noForceEmit: true,
-		}),
+		tscGenerator(),
 	],
 });
