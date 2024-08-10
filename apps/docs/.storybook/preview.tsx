@@ -8,6 +8,9 @@ import { ThemeMantineProvider } from "@localpkg/pkg.ui.core";
 //Theme
 import Theme from "./theme";
 
+//Global Style
+import "@mantine/core/styles.css";
+
 //Styles
 import "../global/app.scss";
 

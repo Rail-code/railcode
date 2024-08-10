@@ -1,0 +1,38 @@
+.organization {
+  padding: 0;
+  margin-top: 2rem;
+
+  .__selected {
+    margin: 0;
+    display: flex;
+    padding: 0.6rem 0;
+    cursor: pointer;
+    align-items: center;
+
+    span {
+      color: #fff;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      font-size: 14px;
+      margin-right: 10px;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--mantine-radius-default);
+      background-color: var(--mantine-color-primary-7);
+    }
+
+    p {
+      color: #e1e1e1;
+      margin: 0;
+      font-weight: 500;
+      font-size: 18px;
+    }
+
+    &:hover {
+      p {
+        color: var(--mantine-color-primary-3);
+      }
+    }
+  }
+}

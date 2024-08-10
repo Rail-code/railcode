@@ -1,0 +1,25 @@
+.profile {
+  display: flex;
+  cursor: pointer;
+  padding: 0.6rem 0;
+
+  &:hover {
+    p {
+      color: var(--mantine-color-primary-3);
+    }
+  }
+
+  span {
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  p {
+    color: #e1e1e1;
+    margin: 0;
+    font-weight: 500;
+    font-size: 18px;
+  }
+}

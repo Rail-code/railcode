@@ -2,7 +2,6 @@
   --rc-layout-aside: 200px;
 }
 
-
 .main {
   width: 100%;
   height: 100svh;
@@ -30,6 +29,7 @@
   flex-direction: column;
   width: var(--rc-layout-aside);
   background-color: var(--mantine-color-primary-9);
+  padding: 1rem 1.3rem;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -44,6 +44,14 @@
     background: #5dbcbe;
     border-radius: 3px;
   }
+}
+
+.aside_top {
+  flex: 1;
+}
+
+.aside_bottom {
+
 }
 
 .content {
