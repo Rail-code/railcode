@@ -20,7 +20,12 @@ export const LayoutRail = (props: LayoutRailProps) => {
 				<div className={Sty.aside_content}>
 					<div className={Sty.aside_top}>
 						<Logo />
-						<Organizations />
+						<Organizations
+							list={props.organization?.list}
+							change={props.organization?.change}
+							current={props.organization?.current}
+							create={props.organization?.create}
+						/>
 						<NavTop list={props.router.top} navigate={props.router.navigate} />
 					</div>
 					<div className={Sty.aside_bottom}>

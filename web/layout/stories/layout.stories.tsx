@@ -8,8 +8,16 @@ export const Basic = {
 	render: (props) => {
 		return (
 			<LayoutRail
-				router={{
+				organization={{
+					list: [],
+					current: {
+						uid: 1,
+						name: "Jhon Doe's",
+					},
 					change: () => {},
+				}}
+				router={{
+					navigate: () => {},
 					current: "/apps",
 					bottom: [
 						{

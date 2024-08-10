@@ -9,12 +9,25 @@ export type MenuItems = {
 	route: string;
 };
 
+export type OrgItems = {
+	name: string;
+	uid: number;
+};
+
+export type OrganizationLayout = {
+	list: Array<OrgItems>;
+	current?: OrgItems;
+	change: (uid: OrgItems["uid"]) => void;
+	create?: () => void;
+};
+
 export type LayoutRailProps = {
 	children: React.ReactNode;
 	profile?: {
 		name: string;
-		change: (action: string) => void;
+		action: (action: string) => void;
 	};
+	organization?: OrganizationLayout;
 	router: {
 		top?: Array<MenuItems>;
 		bottom?: Array<MenuItems>;
