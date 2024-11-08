@@ -14,7 +14,7 @@ export const OrganizationScheme = pgTable("organizations", {
 	name: varchar("name", { length: 100 }).notNull(),
 	//Secret key to use to sign app keys and more. (auto generate)
 	secret: varchar("secret", { length: 100 }).notNull(),
-	createdAt: timestamp("created_at").notNull().defaultNow(),
+	created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
 /**

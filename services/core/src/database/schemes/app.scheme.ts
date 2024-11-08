@@ -17,7 +17,7 @@ export const AppScheme = pgTable(
 		platform: PlatformOsEnum("platform").notNull(),
 		identifier: varchar("identifier", { length: 100 }).notNull(),
 		organization_id: integer("organization_id").references(() => OrganizationScheme.id),
-		createdAt: timestamp("created_at").notNull().defaultNow(),
+		created_at: timestamp("created_at").notNull().defaultNow(),
 		//Encrypted "app-identifier" sends it by sdk client
 		verification: varchar("verification", { length: 100 }),
 	},
@@ -35,16 +35,18 @@ export const AppKeyScheme = pgTable(
 	{
 		id: serial("id").primaryKey(),
 		name: varchar("name", { length: 100 }).notNull(),
-		//Key sign with secret organization.
-		key: varchar("key", { length: 100 }).unique(),
-		//Prefix to identify key.
+		//A secret token to identify the app only.
+		secret: varchar("secret", { length: 100 }).unique(),
+		//Prefix to secret token.
 		prefix: varchar("prefix", { length: 7 }).notNull(),
-		createdAt: timestamp("created_at").notNull().defaultNow(),
+		//An ECC (Elliptic Curve Cryptography) Public key.
+		key: varchar("key", { length: 100 }).unique(),
+		created_at: timestamp("created_at").notNull().defaultNow(),
 		app_id: integer("app_id").references(() => AppScheme.id),
 	},
 	(table) => ({
 		//Updates can only be unique by app and version
-		uniqueAppKeyPrefix: unique("unique_appkey_prefix").on(table.key, table.prefix),
+		uniqueAppKeyPrefix: unique("unique_app_secret_prefix").on(table.secret, table.prefix),
 	}),
 );
 
@@ -65,6 +67,7 @@ export const AppUpdateScheme = pgTable(
 	"app_updates",
 	{
 		id: serial("id").primaryKey(),
+		//Following "semver"
 		version: varchar("version", { length: 50 }).notNull(),
 		size: integer("size").notNull(), //Mb size
 		app_id: integer("app_id").references(() => AppScheme.id),
